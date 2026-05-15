@@ -4,9 +4,8 @@
         xmlns:conv="clr-namespace:Cashlane.Converters"
         Background="White"
         CornerRadius="12"
-        Width="92%"
         MaxWidth="800"
-        MaxHeight="88vh">
+        MaxHeight="700">
 
     <Border.Effect>
         <DropShadowEffect BlurRadius="16" Opacity="0.12" ShadowDepth="4" />
