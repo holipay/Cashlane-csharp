@@ -69,7 +69,8 @@
                     <!-- 公司 -->
                     <StackPanel Margin="0,0,12,12" MinWidth="160">
                         <TextBlock Text="公司" Style="{StaticResource FilterLabel}" />
-                        <ComboBox x:Name="CompanyCombo" Style="{StaticResource FilterCombo}"
+                        <ComboBox Style="{StaticResource FilterCombo}"
+                                  ItemsSource="{Binding Companies}"
                                   DisplayMemberPath="Name" SelectedValuePath="Id"
                                   SelectedValue="{Binding CompanyId, Mode=TwoWay}" />
                     </StackPanel>
@@ -77,7 +78,8 @@
                     <!-- 部门 -->
                     <StackPanel Margin="0,0,12,12" MinWidth="160">
                         <TextBlock Text="部门" Style="{StaticResource FilterLabel}" />
-                        <ComboBox x:Name="DeptCombo" Style="{StaticResource FilterCombo}"
+                        <ComboBox Style="{StaticResource FilterCombo}"
+                                  ItemsSource="{Binding Departments}"
                                   DisplayMemberPath="Name" SelectedValuePath="Id"
                                   SelectedValue="{Binding DeptId, Mode=TwoWay}" />
                     </StackPanel>
@@ -85,9 +87,19 @@
                     <!-- 一级科目 -->
                     <StackPanel Margin="0,0,12,12" MinWidth="160">
                         <TextBlock Text="一级科目" Style="{StaticResource FilterLabel}" />
-                        <ComboBox x:Name="CatCombo" Style="{StaticResource FilterCombo}"
+                        <ComboBox Style="{StaticResource FilterCombo}"
+                                  ItemsSource="{Binding Categories}"
                                   DisplayMemberPath="Name" SelectedValuePath="Id"
                                   SelectedValue="{Binding Cat1Id, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- 二级科目 -->
+                    <StackPanel Margin="0,0,12,12" MinWidth="160">
+                        <TextBlock Text="二级科目" Style="{StaticResource FilterLabel}" />
+                        <ComboBox Style="{StaticResource FilterCombo}"
+                                  ItemsSource="{Binding Cat2Categories}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding Cat2Id, Mode=TwoWay}" />
                     </StackPanel>
 
                     <!-- 报销状态 -->
