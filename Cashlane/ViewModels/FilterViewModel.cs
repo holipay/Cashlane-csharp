@@ -41,11 +41,11 @@ public class FilterViewModel : ViewModelBase
     public string? Search { get => _search; set => SetProperty(ref _search, value); }
     public bool IsOpen { get => _isOpen; set => SetProperty(ref _isOpen, value); }
 
-    public System.Windows.ICommand ToggleCommand => new RelayCommand(() => IsOpen = !IsOpen);
+    public ICommand ToggleCommand => new RelayCommand(() => IsOpen = !IsOpen);
 
-    public System.Windows.ICommand SearchCommand => new RelayCommand(() => _onFilterChanged());
+    public ICommand SearchCommand => new RelayCommand(() => _onFilterChanged());
 
-    public System.Windows.ICommand ResetCommand => new RelayCommand(() =>
+    public ICommand ResetCommand => new RelayCommand(() =>
     {
         CompanyId = null;
         DeptId = null;
