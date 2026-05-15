@@ -1,0 +1,102 @@
+<Window x:Class="Cashlane.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Cashlane.ViewModels"
+        xmlns:views="clr-namespace:Cashlane.Views"
+        Title="Cashlane - 费用管理系统"
+        Width="1360" Height="780"
+        MinWidth="960" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        FontFamily="{StaticResource AppFont}"
+        Background="{StaticResource BgMicaBrush}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <views:SidebarView Grid.Column="0" DataContext="{Binding}" />
+
+        <!-- Main Area -->
+        <DockPanel Grid.Column="1">
+            <!-- Top Bar -->
+            <Border DockPanel.Dock="Top"
+                    Height="48"
+                    Background="White"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="24,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Cashlane"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="{Binding PageTitle, StringFormat=' / {0}'}"
+                                   FontSize="14" FontWeight="Normal"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="4,0,0,0" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="🔄" ToolTip="刷新"
+                                Style="{StaticResource BaseButton}"
+                                Width="34" Height="34"
+                                Command="{Binding RefreshCommand}" />
+                        <Button Content="🔔" ToolTip="通知"
+                                Style="{StaticResource BaseButton}"
+                                Width="34" Height="34"
+                                Margin="4,0,0,0" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Content Area -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="24,20">
+                    <!-- Stats Cards -->
+                    <views:StatsCardsView DataContext="{Binding StatsVm}" />
+
+                    <!-- Filter Panel -->
+                    <views:FilterPanelView DataContext="{Binding FilterVm}" Margin="0,0,0,16" />
+
+                    <!-- Expense Table -->
+                    <views:ExpenseTableView DataContext="{Binding ExpenseTableVm}" />
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <!-- Modal Overlay -->
+        <Border Grid.ColumnSpan="2"
+                Visibility="{Binding IsModalOpen, Converter={StaticResource BoolToVis}}"
+                Panel.ZIndex="100"
+                Cursor="Hand"
+                MouseLeftButtonDown="OnOverlayClick">
+            <Border.Background>
+                <SolidColorBrush Color="Black" Opacity="0.32" />
+            </Border.Background>
+            <views:ExpenseModalView
+                DataContext="{Binding ModalViewModel}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Border>
+
+        <!-- Toast -->
+        <views:ToastView DataContext="{Binding ToastVm}"
+                         Grid.ColumnSpan="2"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Bottom"
+                         Margin="0,0,24,24"
+                         Panel.ZIndex="200" />
+    </Grid>
+</Window>

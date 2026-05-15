@@ -1,0 +1,314 @@
+<Border x:Class="Cashlane.Views.ExpenseModalView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:Cashlane.Converters"
+        Background="White"
+        CornerRadius="12"
+        Width="92%"
+        MaxWidth="800"
+        MaxHeight="88vh">
+
+    <Border.Effect>
+        <DropShadowEffect BlurRadius="16" Opacity="0.12" ShadowDepth="4" />
+    </Border.Effect>
+
+    <Border.Resources>
+        <Style x:Key="ModalLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style x:Key="ModalInput" TargetType="TextBox">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="11,7" />
+            <Setter Property="BorderBrush" Value="#D1D1D1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+        </Style>
+        <Style x:Key="ModalCombo" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="11,7" />
+            <Setter Property="BorderBrush" Value="#D1D1D1" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+        </Style>
+    </Border.Resources>
+
+    <DockPanel>
+        <!-- Header -->
+        <Border DockPanel.Dock="Top"
+                Padding="24,18"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock FontSize="17" FontWeight="SemiBold"
+                           Text="{Binding IsEditing, Converter={conv:EditModeToTitleConverter}}" />
+                <Button Grid.Column="1" Content="✕"
+                        Style="{StaticResource BaseButton}"
+                        Width="30" Height="30"
+                        Click="OnCancel" />
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <Border DockPanel.Dock="Bottom"
+                Padding="24,14"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="取消"
+                        Style="{StaticResource BaseButton}"
+                        Click="OnCancel" />
+                <Button Content="保存"
+                        Style="{StaticResource PrimaryButton}"
+                        Margin="8,0,0,0"
+                        Click="OnSave" />
+            </StackPanel>
+        </Border>
+
+        <!-- Body -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+            <StackPanel>
+                <!-- Tabs -->
+                <Border BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal">
+                        <Border x:Name="BasicTab"
+                                Padding="20,8" Cursor="Hand"
+                                MouseLeftButtonDown="OnBasicTab"
+                                BorderThickness="0,0,0,2"
+                                BorderBrush="Transparent">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="基本信息" FontSize="13" FontWeight="Medium"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Border>
+                        <Border x:Name="SettleTab"
+                                Padding="20,8" Cursor="Hand"
+                                MouseLeftButtonDown="OnSettleTab"
+                                BorderThickness="0,0,0,2"
+                                BorderBrush="Transparent">
+                            <TextBlock Text="结算信息" FontSize="13" FontWeight="Medium"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Basic Tab Content -->
+                <Grid x:Name="BasicPanel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 1: 填单日期 / 发生日期 -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="填单日期" Style="{StaticResource ModalLabel}" />
+                        <DatePicker SelectedDate="{Binding EntryDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="发生日期" Style="{StaticResource ModalLabel}" />
+                        <DatePicker SelectedDate="{Binding OccurDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                    </StackPanel>
+
+                    <!-- Row 2: 公司 / 部门 -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="公司" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  ItemsSource="{Binding Companies}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding CompanyId, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="部门" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  ItemsSource="{Binding Departments}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding DeptId, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Row 3: 一级科目 / 二级科目 -->
+                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="一级科目" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  ItemsSource="{Binding Categories}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding Cat1Id, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="二级科目" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}" />
+                    </StackPanel>
+
+                    <!-- Row 4: 发票内容 (full) -->
+                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,14">
+                        <TextBlock Text="发票内容" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding InvoiceContent, Mode=TwoWay}"
+                                 Tag="输入发票内容" />
+                    </StackPanel>
+
+                    <!-- Row 5: 费用明细 (full) -->
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,14">
+                        <TextBlock Text="费用明细" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Detail, Mode=TwoWay}"
+                                 TextWrapping="Wrap"
+                                 MinHeight="70"
+                                 AcceptsReturn="True"
+                                 Tag="输入费用明细描述" />
+                    </StackPanel>
+
+                    <!-- Row 6: 数量 / 单价 -->
+                    <StackPanel Grid.Row="5" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="数量" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Quantity, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="单价" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding UnitPrice, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Row 7: 汇率 / 单据ID -->
+                    <StackPanel Grid.Row="6" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="汇率" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding ExchangeRate, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="单据ID" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding DocId}"
+                                 IsReadOnly="True"
+                                 Background="#F5F5F5" />
+                    </StackPanel>
+
+                    <!-- Row 8: 预付/代付 / 报销费用 -->
+                    <StackPanel Grid.Row="7" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="预付/代付" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Prepaid, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="7" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="报销费用" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding ReimburseAmount, Mode=TwoWay}"
+                                 FontWeight="SemiBold" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Settle Tab Content -->
+                <Grid x:Name="SettlePanel" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 1: 方式 / 供应商 -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="方式" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  SelectedValue="{Binding PayMethod, Mode=TwoWay}"
+                                  SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="请款" Content="请款" />
+                            <ComboBoxItem Tag="报销" Content="报销" IsSelected="True" />
+                            <ComboBoxItem Tag="其他" Content="其他" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="供应商" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  ItemsSource="{Binding Contacts}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding ContactId, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Row 2: 付款人 / 报销人 -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="付款人" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Payer, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="报销人" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Reimbursee, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Row 3: 转账收款 (full) -->
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,14">
+                        <TextBlock Text="转账收款" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding TransferRecipient, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <!-- Row 4: 批次/张数 / 报销状态 -->
+                    <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="批次/张数" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding BatchInfo, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,14">
+                        <TextBlock Text="报销状态" Style="{StaticResource ModalLabel}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  SelectedValue="{Binding ReimburseStatus, Mode=TwoWay}"
+                                  SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="填单" Content="填单" IsSelected="True" />
+                            <ComboBoxItem Tag="签录" Content="签录" />
+                            <ComboBoxItem Tag="完成" Content="完成" />
+                            <ComboBoxItem Tag="取消" Content="取消" />
+                            <ComboBoxItem Tag="付款" Content="付款" />
+                            <ComboBoxItem Tag="发票" Content="发票" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Row 5: 领款日期 -->
+                    <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,10,14">
+                        <TextBlock Text="领款日期" Style="{StaticResource ModalLabel}" />
+                        <DatePicker SelectedDate="{Binding CollectDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                    </StackPanel>
+
+                    <!-- Row 6: 备注 (full) -->
+                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,14">
+                        <TextBlock Text="备注" Style="{StaticResource ModalLabel}" />
+                        <TextBox Style="{StaticResource ModalInput}"
+                                 Text="{Binding Notes, Mode=TwoWay}"
+                                 TextWrapping="Wrap"
+                                 MinHeight="70"
+                                 AcceptsReturn="True" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Border>
