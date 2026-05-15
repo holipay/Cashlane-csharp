@@ -14,10 +14,19 @@ public partial class ExpenseModalView : Border
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (DataContext is ExpenseModalViewModel vm)
+        if (e.OldValue is ExpenseModalViewModel oldVm)
+            oldVm.PropertyChanged -= OnVmPropertyChanged;
+        if (e.NewValue is ExpenseModalViewModel newVm)
         {
+            newVm.PropertyChanged += OnVmPropertyChanged;
             UpdateTabs();
         }
+    }
+
+    private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ExpenseModalViewModel.Tab))
+            UpdateTabs();
     }
 
     private void OnBasicTab(object sender, System.Windows.Input.MouseButtonEventArgs e)
