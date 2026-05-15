@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 using Cashlane.Models;
 using Cashlane.Services;
@@ -13,6 +12,11 @@ public class ExpenseTableViewModel : ViewModelBase
     private Expense? _selectedExpense;
     private int _totalCount;
     private double _totalAmount;
+
+    /// <summary>
+    /// Injected from View: (title, message) => userConfirmed
+    /// </summary>
+    public Func<string, string, bool>? ConfirmDelete { get; set; }
 
     public ExpenseTableViewModel(DatabaseService db, MainViewModel mainVm)
     {
@@ -51,12 +55,8 @@ public class ExpenseTableViewModel : ViewModelBase
     public ICommand DeleteCommand => new RelayCommand(() =>
     {
         if (SelectedExpense == null) return;
-        var result = MessageBox.Show(
-            "确定要删除这条费用记录吗？此操作不可恢复。",
-            "确认删除",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning);
-        if (result == MessageBoxResult.Yes)
+        var confirmed = ConfirmDelete?.Invoke("确认删除", "确定要删除这条费用记录吗？此操作不可恢复。") ?? false;
+        if (confirmed)
         {
             _db.DeleteExpense(SelectedExpense.Id);
             _mainVm.LoadData();
