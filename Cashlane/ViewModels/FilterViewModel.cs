@@ -29,10 +29,19 @@ public class FilterViewModel : ViewModelBase
     public ObservableCollection<LookupItem> Companies { get; } = new();
     public ObservableCollection<LookupItem> Departments { get; } = new();
     public ObservableCollection<LookupItem> Categories { get; } = new();
+    public ObservableCollection<LookupItem> Cat2Categories { get; } = new();
 
     public int? CompanyId { get => _companyId; set => SetProperty(ref _companyId, value); }
     public int? DeptId { get => _deptId; set => SetProperty(ref _deptId, value); }
-    public int? Cat1Id { get => _cat1Id; set => SetProperty(ref _cat1Id, value); }
+    public int? Cat1Id
+    {
+        get => _cat1Id;
+        set
+        {
+            if (SetProperty(ref _cat1Id, value))
+                LoadCat2Categories();
+        }
+    }
     public int? Cat2Id { get => _cat2Id; set => SetProperty(ref _cat2Id, value); }
     public string? Status { get => _status; set => SetProperty(ref _status, value); }
     public string? Method { get => _method; set => SetProperty(ref _method, value); }
@@ -51,6 +60,7 @@ public class FilterViewModel : ViewModelBase
         DeptId = null;
         Cat1Id = null;
         Cat2Id = null;
+        Cat2Categories.Clear();
         Status = null;
         Method = null;
         DateFrom = null;
@@ -77,5 +87,15 @@ public class FilterViewModel : ViewModelBase
         foreach (var c in _db.GetCompanies()) Companies.Add(c);
         foreach (var d in _db.GetDepartments()) Departments.Add(d);
         foreach (var c in _db.GetCategories(0)) Categories.Add(c);
+    }
+
+    private void LoadCat2Categories()
+    {
+        Cat2Categories.Clear();
+        if (_cat1Id.HasValue)
+        {
+            foreach (var c in _db.GetCategories(_cat1Id.Value))
+                Cat2Categories.Add(c);
+        }
     }
 }
