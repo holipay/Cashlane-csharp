@@ -8,6 +8,7 @@ namespace Cashlane.ViewModels;
 public class ExpenseTableViewModel : ViewModelBase
 {
     private readonly DatabaseService _db;
+    private readonly ExcelService _excel;
     private readonly MainViewModel _mainVm;
     private Expense? _selectedExpense;
     private int _totalCount;
@@ -18,9 +19,20 @@ public class ExpenseTableViewModel : ViewModelBase
     /// </summary>
     public Func<string, string, bool>? ConfirmDelete { get; set; }
 
-    public ExpenseTableViewModel(DatabaseService db, MainViewModel mainVm)
+    /// <summary>
+    /// Injected from View: returns a file path for opening, or null if cancelled
+    /// </summary>
+    public Func<string?>? ShowOpenFileDialog { get; set; }
+
+    /// <summary>
+    /// Injected from View: returns a file path for saving, or null if cancelled
+    /// </summary>
+    public Func<string?>? ShowSaveFileDialog { get; set; }
+
+    public ExpenseTableViewModel(DatabaseService db, ExcelService excel, MainViewModel mainVm)
     {
         _db = db;
+        _excel = excel;
         _mainVm = mainVm;
     }
 
@@ -64,14 +76,58 @@ public class ExpenseTableViewModel : ViewModelBase
         }
     });
 
-    public ICommand ImportCommand => new RelayCommand(() =>
-    {
-        _mainVm.ToastVm.Show("📥 导入功能开发中...");
-    });
-
     public ICommand ExportCommand => new RelayCommand(() =>
     {
-        _mainVm.ToastVm.Show("📤 导出功能开发中...");
+        var path = ShowSaveFileDialog?.Invoke();
+        if (path == null) return;
+
+        try
+        {
+            var expenses = Expenses.ToList();
+            _excel.ExportExpenses(path, expenses);
+            _mainVm.ToastVm.Show($"📤 已导出 {expenses.Count} 条记录");
+        }
+        catch (Exception ex)
+        {
+            _mainVm.ToastVm.Show($"❌ 导出失败: {ex.Message}");
+        }
+    });
+
+    public ICommand ImportCommand => new RelayCommand(() =>
+    {
+        var path = ShowOpenFileDialog?.Invoke();
+        if (path == null) return;
+
+        try
+        {
+            var imported = _excel.ImportExpenses(path);
+            if (imported.Count == 0)
+            {
+                _mainVm.ToastVm.Show("⚠️ 文件中没有有效数据");
+                return;
+            }
+
+            int success = 0;
+            foreach (var e in imported)
+            {
+                // Resolve names to IDs
+                e.CompanyId = _db.ResolveCompanyId(e.CompanyName);
+                e.DeptId = _db.ResolveDeptId(e.DeptName);
+                e.Cat1Id = _db.ResolveCategoryId(e.Cat1Name);
+                e.Cat2Id = _db.ResolveCategoryId(e.Cat2Name);
+                e.ContactId = _db.ResolveContactId(e.ContactName);
+
+                _db.CreateExpense(e);
+                success++;
+            }
+
+            _mainVm.LoadData();
+            _mainVm.ToastVm.Show($"📥 已导入 {success} 条记录");
+        }
+        catch (Exception ex)
+        {
+            _mainVm.ToastVm.Show($"❌ 导入失败: {ex.Message}");
+        }
     });
 
     public void LoadExpenses(List<Expense> expenses)
