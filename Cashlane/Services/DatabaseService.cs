@@ -423,6 +423,36 @@ public class DatabaseService : IDisposable
         conn.Execute("DELETE FROM categories WHERE id = @Id", new { Id = id });
     }
 
+    // ─── Name Resolution (for import) ──────────────────────────────
+
+    public int ResolveCompanyId(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return 0;
+        var conn = GetConnection();
+        return conn.ExecuteScalar<int?>("SELECT id FROM companies WHERE name = @Name", new { Name = name }) ?? 0;
+    }
+
+    public int ResolveDeptId(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return 0;
+        var conn = GetConnection();
+        return conn.ExecuteScalar<int?>("SELECT id FROM departments WHERE name = @Name", new { Name = name }) ?? 0;
+    }
+
+    public int ResolveCategoryId(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return 0;
+        var conn = GetConnection();
+        return conn.ExecuteScalar<int?>("SELECT id FROM categories WHERE name = @Name", new { Name = name }) ?? 0;
+    }
+
+    public int ResolveContactId(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return 0;
+        var conn = GetConnection();
+        return conn.ExecuteScalar<int?>("SELECT id FROM contacts WHERE short_name = @Name", new { Name = name }) ?? 0;
+    }
+
     public void Dispose()
     {
         (_connection as IDisposable)?.Dispose();
