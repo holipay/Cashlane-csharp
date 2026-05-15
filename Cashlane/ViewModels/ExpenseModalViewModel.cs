@@ -100,10 +100,10 @@ public class ExpenseModalViewModel : ViewModelBase
     public string Notes { get => _notes; set => SetProperty(ref _notes, value); }
 
     // Commands
-    public System.Windows.ICommand TabBasicCommand => new RelayCommand(() => Tab = "basic");
-    public System.Windows.ICommand TabSettleCommand => new RelayCommand(() => Tab = "settle");
-    public System.Windows.ICommand SaveCommand => new RelayCommand(DoSave);
-    public System.Windows.ICommand CancelCommand => new RelayCommand(() => { }, () => false); // handled in view
+    public ICommand TabBasicCommand => new RelayCommand(() => Tab = "basic");
+    public ICommand TabSettleCommand => new RelayCommand(() => Tab = "settle");
+    public ICommand SaveCommand => new RelayCommand(DoSave);
+    public ICommand CancelCommand => new RelayCommand(() => { }, () => false); // handled in view
 
     private void DoSave()
     {
