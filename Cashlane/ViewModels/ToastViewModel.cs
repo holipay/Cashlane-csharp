@@ -4,6 +4,7 @@ public class ToastViewModel : ViewModelBase
 {
     private string _message = "";
     private bool _isVisible;
+    private System.Windows.Threading.DispatcherTimer? _timer;
 
     public string Message
     {
@@ -19,17 +20,21 @@ public class ToastViewModel : ViewModelBase
 
     public void Show(string message)
     {
+        _timer?.Stop();
+
         Message = message;
         IsVisible = true;
-        var timer = new System.Windows.Threading.DispatcherTimer
+
+        _timer = new System.Windows.Threading.DispatcherTimer
         {
             Interval = System.TimeSpan.FromMilliseconds(2500)
         };
-        timer.Tick += (_, _) =>
+        _timer.Tick += (_, _) =>
         {
             IsVisible = false;
-            timer.Stop();
+            _timer.Stop();
+            _timer = null;
         };
-        timer.Start();
+        _timer.Start();
     }
 }
