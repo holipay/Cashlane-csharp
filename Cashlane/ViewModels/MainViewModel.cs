@@ -7,17 +7,19 @@ namespace Cashlane.ViewModels;
 public class MainViewModel : ViewModelBase
 {
     private readonly DatabaseService _db;
+    private readonly ExcelService _excel;
     private string _activePage = "dashboard";
     private string _pageTitle = "仪表盘";
     private ExpenseModalViewModel? _modalViewModel;
     private bool _isModalOpen;
 
-    public MainViewModel(DatabaseService db)
+    public MainViewModel(DatabaseService db, ExcelService excel)
     {
         _db = db;
+        _excel = excel;
         StatsVm = new StatsViewModel(db);
         FilterVm = new FilterViewModel(db, OnFilterChanged);
-        ExpenseTableVm = new ExpenseTableViewModel(db, this);
+        ExpenseTableVm = new ExpenseTableViewModel(db, excel, this);
         ContactsVm = new ContactsViewModel(db, this);
         CategoriesVm = new CategoriesViewModel(db, this);
         ToastVm = new ToastViewModel();
