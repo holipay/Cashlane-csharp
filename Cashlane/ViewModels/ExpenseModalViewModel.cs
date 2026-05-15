@@ -18,6 +18,7 @@ public class ExpenseModalViewModel : ViewModelBase
     private int _deptId;
     private int _cat1Id;
     private int _cat2Id;
+    private ObservableCollection<LookupItem> _cat2Categories = new();
     private string _invoiceContent = "";
     private string _detail = "";
     private double _quantity = 1;
@@ -53,6 +54,7 @@ public class ExpenseModalViewModel : ViewModelBase
             _isEditing = true;
             EditingId = expense.Id;
             LoadFromExpense(expense);
+            LoadCat2Categories();
         }
     }
 
@@ -77,8 +79,22 @@ public class ExpenseModalViewModel : ViewModelBase
     public string OccurDate { get => _occurDate; set => SetProperty(ref _occurDate, value); }
     public int CompanyId { get => _companyId; set => SetProperty(ref _companyId, value); }
     public int DeptId { get => _deptId; set => SetProperty(ref _deptId, value); }
-    public int Cat1Id { get => _cat1Id; set => SetProperty(ref _cat1Id, value); }
+    public int Cat1Id
+    {
+        get => _cat1Id;
+        set
+        {
+            if (SetProperty(ref _cat1Id, value))
+                LoadCat2Categories();
+        }
+    }
     public int Cat2Id { get => _cat2Id; set => SetProperty(ref _cat2Id, value); }
+
+    public ObservableCollection<LookupItem> Cat2Categories
+    {
+        get => _cat2Categories;
+        set => SetProperty(ref _cat2Categories, value);
+    }
     public string InvoiceContent { get => _invoiceContent; set => SetProperty(ref _invoiceContent, value); }
     public string Detail { get => _detail; set => SetProperty(ref _detail, value); }
     public double Quantity { get => _quantity; set => SetProperty(ref _quantity, value); }
@@ -104,6 +120,13 @@ public class ExpenseModalViewModel : ViewModelBase
     public ICommand TabSettleCommand => new RelayCommand(() => Tab = "settle");
     public ICommand SaveCommand => new RelayCommand(DoSave);
     public ICommand CancelCommand => new RelayCommand(() => { }, () => false); // handled in view
+
+    private void LoadCat2Categories()
+    {
+        Cat2Categories.Clear();
+        foreach (var c in _db.GetCategories(_cat1Id))
+            Cat2Categories.Add(c);
+    }
 
     private void DoSave()
     {
