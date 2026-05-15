@@ -13,6 +13,23 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <!-- Page Templates -->
+        <DataTemplate x:Key="DashboardTemplate">
+            <StackPanel>
+                <views:StatsCardsView DataContext="{Binding StatsVm}" />
+                <views:FilterPanelView DataContext="{Binding FilterVm}" Margin="0,0,0,16" />
+                <views:ExpenseTableView DataContext="{Binding ExpenseTableVm}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ContactsTemplate">
+            <views:ContactsView DataContext="{Binding ContactsVm}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="CategoriesTemplate">
+            <views:CategoriesView DataContext="{Binding CategoriesVm}" />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
@@ -63,22 +80,21 @@
 
             <!-- Content Area -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="24,20">
-                    <!-- Dashboard / Expenses Page -->
-                    <StackPanel Visibility="{Binding IsDashboardPage, Converter={StaticResource BoolToVis}}">
-                        <views:StatsCardsView DataContext="{Binding StatsVm}" />
-                        <views:FilterPanelView DataContext="{Binding FilterVm}" Margin="0,0,0,16" />
-                        <views:ExpenseTableView DataContext="{Binding ExpenseTableVm}" />
-                    </StackPanel>
-
-                    <!-- Contacts Page -->
-                    <views:ContactsView DataContext="{Binding ContactsVm}"
-                                        Visibility="{Binding IsContactsPage, Converter={StaticResource BoolToVis}}" />
-
-                    <!-- Categories Page -->
-                    <views:CategoriesView DataContext="{Binding CategoriesVm}"
-                                          Visibility="{Binding IsCategoriesPage, Converter={StaticResource BoolToVis}}" />
-                </Grid>
+                <ContentControl Margin="24,20" Content="{Binding}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DashboardTemplate}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPageKind}" Value="contacts">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource ContactsTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentPageKind}" Value="categories">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource CategoriesTemplate}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
             </ScrollViewer>
         </DockPanel>
 
