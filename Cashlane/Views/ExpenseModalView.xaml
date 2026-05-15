@@ -157,7 +157,10 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,14">
                         <TextBlock Text="二级科目" Style="{StaticResource ModalLabel}" />
-                        <ComboBox Style="{StaticResource ModalCombo}" />
+                        <ComboBox Style="{StaticResource ModalCombo}"
+                                  ItemsSource="{Binding Cat2Categories}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id"
+                                  SelectedValue="{Binding Cat2Id, Mode=TwoWay}" />
                     </StackPanel>
 
                     <!-- Row 4: 发票内容 (full) -->
