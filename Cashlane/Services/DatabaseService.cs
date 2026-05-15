@@ -248,7 +248,6 @@ public class DatabaseService : IDisposable
                 @ExchangeRate, @Prepaid, @ReimburseAmount, @ContactId, @PayMethod,
                 @Payer, @Reimbursee, @TransferRecipient, @DocId, @BatchInfo,
                 @ReimburseStatus, @IsAsset, @CollectDate, @Notes);
-            SELECT last_insert_rowid();
         ", new
         {
             expense.Sid, expense.EntryDate, expense.OccurDate,
