@@ -134,14 +134,14 @@
                     <!-- 起始日期 -->
                     <StackPanel Margin="0,0,12,12" MinWidth="160">
                         <TextBlock Text="起始日期" Style="{StaticResource FilterLabel}" />
-                        <DatePicker SelectedDate="{Binding DateFrom, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}"
+                        <DatePicker SelectedDate="{Binding DateFrom, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}"
                                     FontSize="13" Height="32" />
                     </StackPanel>
 
                     <!-- 截止日期 -->
                     <StackPanel Margin="0,0,12,12" MinWidth="160">
                         <TextBlock Text="截止日期" Style="{StaticResource FilterLabel}" />
-                        <DatePicker SelectedDate="{Binding DateTo, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}"
+                        <DatePicker SelectedDate="{Binding DateTo, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}"
                                     FontSize="13" Height="32" />
                     </StackPanel>
 
