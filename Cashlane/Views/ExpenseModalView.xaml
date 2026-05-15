@@ -48,7 +48,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock FontSize="17" FontWeight="SemiBold"
-                           Text="{Binding IsEditing, Converter={conv:EditModeToTitleConverter}}" />
+                           Text="{Binding IsEditing, Converter={StaticResource EditModeToTitleConverter}}" />
                 <Button Grid.Column="1" Content="✕"
                         Style="{StaticResource BaseButton}"
                         Width="30" Height="30"
@@ -124,11 +124,11 @@
                     <!-- Row 1: 填单日期 / 发生日期 -->
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,14">
                         <TextBlock Text="填单日期" Style="{StaticResource ModalLabel}" />
-                        <DatePicker SelectedDate="{Binding EntryDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                        <DatePicker SelectedDate="{Binding EntryDate, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}" FontSize="13" />
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,14">
                         <TextBlock Text="发生日期" Style="{StaticResource ModalLabel}" />
-                        <DatePicker SelectedDate="{Binding OccurDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                        <DatePicker SelectedDate="{Binding OccurDate, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}" FontSize="13" />
                     </StackPanel>
 
                     <!-- Row 2: 公司 / 部门 -->
@@ -298,7 +298,7 @@
                     <!-- Row 5: 领款日期 -->
                     <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,10,14">
                         <TextBlock Text="领款日期" Style="{StaticResource ModalLabel}" />
-                        <DatePicker SelectedDate="{Binding CollectDate, Mode=TwoWay, Converter={conv:StringToDateTimeConverter}}" FontSize="13" />
+                        <DatePicker SelectedDate="{Binding CollectDate, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}" FontSize="13" />
                     </StackPanel>
 
                     <!-- Row 6: 备注 (full) -->
