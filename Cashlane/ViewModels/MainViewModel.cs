@@ -56,6 +56,7 @@ public class MainViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsDashboardPage));
                 OnPropertyChanged(nameof(IsContactsPage));
                 OnPropertyChanged(nameof(IsCategoriesPage));
+                OnPropertyChanged(nameof(CurrentPageKind));
             }
         }
     }
@@ -63,6 +64,13 @@ public class MainViewModel : ViewModelBase
     public bool IsDashboardPage => _activePage is "dashboard" or "expenses";
     public bool IsContactsPage => _activePage == "contacts";
     public bool IsCategoriesPage => _activePage == "categories";
+
+    public string CurrentPageKind => _activePage switch
+    {
+        "contacts" => "contacts",
+        "categories" => "categories",
+        _ => "dashboard"
+    };
 
     public string PageTitle
     {
