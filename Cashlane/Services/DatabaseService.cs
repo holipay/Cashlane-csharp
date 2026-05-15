@@ -216,7 +216,7 @@ public class DatabaseService : IDisposable
         if (!string.IsNullOrEmpty(filter.DateTo))
         {
             conditions.Add("e.occur_date <= @DateTo");
-            parameters.Add("DateTo", filter.DateTo + " 23:59:59");
+            parameters.Add("DateTo", filter.DateTo);
         }
         if (!string.IsNullOrEmpty(filter.Search))
         {
@@ -355,6 +355,72 @@ public class DatabaseService : IDisposable
     {
         var conn = GetConnection();
         return conn.Query<LookupItem>("SELECT id AS Id, short_name AS Name FROM contacts ORDER BY short_name").ToList();
+    }
+
+    // ─── Contact CRUD ─────────────────────────────────────────────
+
+    public List<Contact> GetAllContacts()
+    {
+        var conn = GetConnection();
+        return conn.Query<Contact>(
+            "SELECT id AS Id, short_name AS ShortName, full_name AS FullName, phone AS Phone, notes AS Notes FROM contacts ORDER BY id").ToList();
+    }
+
+    public int CreateContact(Contact contact)
+    {
+        var conn = GetConnection();
+        conn.Execute(@"
+            INSERT INTO contacts (short_name, full_name, phone, notes)
+            VALUES (@ShortName, @FullName, @Phone, @Notes);
+        ", contact);
+        return conn.ExecuteScalar<int>("SELECT last_insert_rowid()");
+    }
+
+    public void UpdateContact(int id, Contact contact)
+    {
+        var conn = GetConnection();
+        conn.Execute(@"
+            UPDATE contacts SET short_name=@ShortName, full_name=@FullName,
+                phone=@Phone, notes=@Notes
+            WHERE id=@Id
+        ", new { contact.ShortName, contact.FullName, contact.Phone, contact.Notes, Id = id });
+    }
+
+    public void DeleteContact(int id)
+    {
+        var conn = GetConnection();
+        conn.Execute("DELETE FROM contacts WHERE id = @Id", new { Id = id });
+    }
+
+    // ─── Category CRUD ────────────────────────────────────────────
+
+    public List<Category> GetAllCategories()
+    {
+        var conn = GetConnection();
+        return conn.Query<Category>(
+            "SELECT id AS Id, parent_id AS ParentId, name AS Name FROM categories ORDER BY parent_id, id").ToList();
+    }
+
+    public int CreateCategory(Category category)
+    {
+        var conn = GetConnection();
+        conn.Execute(@"
+            INSERT INTO categories (parent_id, name) VALUES (@ParentId, @Name);
+        ", category);
+        return conn.ExecuteScalar<int>("SELECT last_insert_rowid()");
+    }
+
+    public void UpdateCategory(int id, Category category)
+    {
+        var conn = GetConnection();
+        conn.Execute("UPDATE categories SET parent_id=@ParentId, name=@Name WHERE id=@Id",
+            new { category.ParentId, category.Name, Id = id });
+    }
+
+    public void DeleteCategory(int id)
+    {
+        var conn = GetConnection();
+        conn.Execute("DELETE FROM categories WHERE id = @Id", new { Id = id });
     }
 
     public void Dispose()
