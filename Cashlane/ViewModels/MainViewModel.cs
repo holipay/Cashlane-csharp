@@ -18,6 +18,8 @@ public class MainViewModel : ViewModelBase
         StatsVm = new StatsViewModel(db);
         FilterVm = new FilterViewModel(db, OnFilterChanged);
         ExpenseTableVm = new ExpenseTableViewModel(db, this);
+        ContactsVm = new ContactsViewModel(db, this);
+        CategoriesVm = new CategoriesViewModel(db, this);
         ToastVm = new ToastViewModel();
 
         LoadData();
@@ -26,6 +28,8 @@ public class MainViewModel : ViewModelBase
     public StatsViewModel StatsVm { get; }
     public FilterViewModel FilterVm { get; }
     public ExpenseTableViewModel ExpenseTableVm { get; }
+    public ContactsViewModel ContactsVm { get; }
+    public CategoriesViewModel CategoriesVm { get; }
     public ToastViewModel ToastVm { get; }
 
     public string ActivePage
@@ -47,10 +51,16 @@ public class MainViewModel : ViewModelBase
                     "settings" => "系统设置",
                     _ => value
                 };
-                ToastVm.Show($"📂 {PageTitle}");
+                OnPropertyChanged(nameof(IsDashboardPage));
+                OnPropertyChanged(nameof(IsContactsPage));
+                OnPropertyChanged(nameof(IsCategoriesPage));
             }
         }
     }
+
+    public bool IsDashboardPage => _activePage is "dashboard" or "expenses";
+    public bool IsContactsPage => _activePage == "contacts";
+    public bool IsCategoriesPage => _activePage == "categories";
 
     public string PageTitle
     {
