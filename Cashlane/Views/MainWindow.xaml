@@ -63,16 +63,22 @@
 
             <!-- Content Area -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Margin="24,20">
-                    <!-- Stats Cards -->
-                    <views:StatsCardsView DataContext="{Binding StatsVm}" />
+                <Grid Margin="24,20">
+                    <!-- Dashboard / Expenses Page -->
+                    <StackPanel Visibility="{Binding IsDashboardPage, Converter={StaticResource BoolToVis}}">
+                        <views:StatsCardsView DataContext="{Binding StatsVm}" />
+                        <views:FilterPanelView DataContext="{Binding FilterVm}" Margin="0,0,0,16" />
+                        <views:ExpenseTableView DataContext="{Binding ExpenseTableVm}" />
+                    </StackPanel>
 
-                    <!-- Filter Panel -->
-                    <views:FilterPanelView DataContext="{Binding FilterVm}" Margin="0,0,0,16" />
+                    <!-- Contacts Page -->
+                    <views:ContactsView DataContext="{Binding ContactsVm}"
+                                        Visibility="{Binding IsContactsPage, Converter={StaticResource BoolToVis}}" />
 
-                    <!-- Expense Table -->
-                    <views:ExpenseTableView DataContext="{Binding ExpenseTableVm}" />
-                </StackPanel>
+                    <!-- Categories Page -->
+                    <views:CategoriesView DataContext="{Binding CategoriesVm}"
+                                          Visibility="{Binding IsCategoriesPage, Converter={StaticResource BoolToVis}}" />
+                </Grid>
             </ScrollViewer>
         </DockPanel>
 
