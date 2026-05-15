@@ -19,6 +19,7 @@ public partial class App : Application
         var db = new DatabaseService();
         db.Initialize();
         services.AddSingleton(db);
+        services.AddSingleton<ExcelService>();
         services.AddSingleton<MainViewModel>();
 
         _serviceProvider = services.BuildServiceProvider();
